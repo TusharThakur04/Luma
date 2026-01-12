@@ -1,10 +1,13 @@
 import { inngest } from "./client";
 import { createAgent, gemini } from "@inngest/agent-kit";
+import { Sandbox } from "@e2b/code-interpreter";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
+export const nextjsSandbox = inngest.createFunction(
+  { id: "nextjs-sandbox" },
   { event: "test/agent" },
   async ({ event, step }) => {
+    const sandbox = await Sandbox.create("luma-test-nextjs-app");
+
     await step.sleep("wait-a-moment", "5s");
     const codeWriterAgent = createAgent({
       name: "Code writer",
@@ -18,8 +21,12 @@ export const helloWorld = inngest.createFunction(
       }),
     });
     const { output } = await codeWriterAgent.run(event.data.prompt);
+    const sandboxUrl = await step.run("get-sandbox-url", async () => {
+      const host = sandbox.getHost(3000);
+      return `https://${host}`;
+    });
 
     console.log(event.data);
-    return { output };
+    return { output, sandboxUrl };
   }
 );
