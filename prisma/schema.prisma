@@ -6,3 +6,37 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum MessageRole {
+  Assistant
+  User
+}
+
+enum MessageType {
+  Result
+  Error
+
+}
+
+
+model Message {
+  id        String      @id @default(uuid())
+  content   String
+  role      MessageRole
+  type      MessageType
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  fragment  Fragment?
+
+}
+
+model Fragment {
+  id         String  @id @default(uuid())
+  messageId  String  @unique
+  message    Message @relation(fields: [messageId] , references: [id])
+  sandboxURL String
+  title      String
+  file       Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
