@@ -9,10 +9,11 @@ import { Sandbox } from "@e2b/code-interpreter";
 import { z } from "zod";
 import { PROMPT } from "@/utils/prompts";
 import { lastAssistantTextMessageContent } from "@/lib/utils";
+import prisma from "@/lib/prisma";
 
 export const nextjsSandbox = inngest.createFunction(
   { id: "nextjs-sandbox" },
-  { event: "test/agent" },
+  { event: "agent-prompt" },
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("luma-test-nextjs-app");
@@ -77,13 +78,12 @@ export const nextjsSandbox = inngest.createFunction(
           try {
             const updatedFiles = network.state.data.files || {};
 
-            // 🔍 pwd
-            const pwd = await sandbox.commands.run("pwd");
-            console.log("📁 pwd:", pwd.stdout);
+            // const pwd = await sandbox.commands.run("pwd");
+            // console.log("pwd:", pwd.stdout);
 
-            // 🔍 ls /home/user
-            const ls = await sandbox.commands.run("ls -la /home/user");
-            console.log("📂 /home/user contents:\n", ls.stdout);
+            // const ls = await sandbox.commands.run("ls -la /home/user");
+            // console.log("/home/user contents:\n", ls.stdout);
+
             for (const file of files) {
               await sandbox.files.write(
                 `/home/user/${file.path}`,
@@ -92,7 +92,9 @@ export const nextjsSandbox = inngest.createFunction(
               const result = await sandbox.commands.run(
                 "cat /home/user/app/page.tsx"
               );
-              console.log("app/page.tsx file------", result);
+
+              // console.log("app/page.tsx file------", result);
+
               updatedFiles[file.path] = file.content; //keeping track of what files added or changes
             }
             return updatedFiles;
@@ -177,6 +179,36 @@ export const nextjsSandbox = inngest.createFunction(
     });
 
     console.log(event.data);
+
+    const isError = output.state.data.summary ? false : true;
+
+    await step.run("save-agent-message", async () => {
+      if (isError) {
+        await prisma.message.create({
+          data: {
+            content: "Something went wrong please try again",
+            role: "Assistant",
+            type: "Error",
+          },
+        });
+        return;
+      }
+
+      await prisma.message.create({
+        data: {
+          content: output.state.data.summary,
+          role: "Assistant",
+          type: "Result",
+          fragment: {
+            create: {
+              sandboxURL: sandboxUrl,
+              file: output.state.data.files,
+              title: "Fragment ",
+            },
+          },
+        },
+      });
+    });
     return {
       url: sandboxUrl,
       files: output.state.data.files,
