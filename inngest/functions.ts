@@ -189,6 +189,7 @@ export const nextjsSandbox = inngest.createFunction(
             content: "Something went wrong please try again",
             role: "Assistant",
             type: "Error",
+            projectId: event.data.projectId,
           },
         });
         return;
@@ -199,6 +200,7 @@ export const nextjsSandbox = inngest.createFunction(
           content: output.state.data.summary,
           role: "Assistant",
           type: "Result",
+          projectId: event.data.projectId,
           fragment: {
             create: {
               sandboxURL: sandboxUrl,

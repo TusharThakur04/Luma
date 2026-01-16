@@ -2,13 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+
 export default function Home() {
+  const router = useRouter();
   const [value, setValue] = useState("");
   const trpc = useTRPC();
-  const invoke = useMutation(trpc.message.create.mutationOptions({}));
-  const messages = useQuery(trpc.message.getMessages.queryOptions());
+  const invoke = useMutation(
+    trpc.project.create.mutationOptions({
+      onSuccess: (data) => {
+        router.push(`/projects/${data.id}`);
+      },
+    })
+  );
 
   return (
     <div>
@@ -16,7 +24,7 @@ export default function Home() {
       <Button onClick={() => invoke.mutate({ message: value })}>
         invoke inngest
       </Button>
-      {JSON.stringify(messages, null, 2)}
+      {/* {JSON.stringify(messages, null, 2)} */}
     </div>
   );
 }
