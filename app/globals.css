@@ -123,3 +123,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* react-split gutter */
+.gutter {
+  background-color: #e5e7eb; /* gray-300 */
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.gutter-horizontal {
+  cursor: col-resize;
+  width: 8px;
+}
+
+.gutter-horizontal::after {
+  content: "";
+  display: block;
+  width: 2px;
+  height: 40px;
+  margin: auto;
+  background-color: #9ca3af; /* gray-400 */
+  border-radius: 9999px;
+}

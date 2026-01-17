@@ -12,6 +12,14 @@ export const messageRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
+      await prisma.message.create({
+        data: {
+          content: input.message,
+          projectId: input.projectId,
+          role: "User",
+          type: "Result",
+        },
+      });
       await inngest.send({
         name: "agent-prompt",
         data: {
@@ -21,15 +29,24 @@ export const messageRouter = createTRPCRouter({
       });
     }),
 
-  getMessages: baseProcedure.query(async () => {
-    const messages = await prisma.message.findMany({
-      include: {
-        fragment: true,
-      },
-      orderBy: {
-        createdAt: "asc",
-      },
-    });
-    return messages;
-  }),
+  getMessages: baseProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const messages = await prisma.message.findMany({
+        where: {
+          projectId: input.projectId,
+        },
+        include: {
+          fragment: true,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+      return messages;
+    }),
 });
