@@ -1,3 +1,4 @@
+"use client";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,13 +37,13 @@ const MessageForm = ({ projectId }: { projectId: string }) => {
       onSuccess: () => {
         form.reset();
         queryClient.invalidateQueries(
-          trpc.message.getMessages.queryOptions({ projectId })
+          trpc.message.getMessages.queryOptions({ projectId }),
         );
       },
       onError: (err) => {
         console.error(err.message);
       },
-    })
+    }),
   );
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {

@@ -3,20 +3,51 @@ import { useTRPC } from "@/trpc/client";
 import MessageCard from "./message-card";
 import MessageForm from "./message-form";
 import { useEffect, useRef } from "react";
+import { Fragment } from "@/app/generated/prisma/client";
+import Thinking from "./thinking";
+
 interface Props {
   projectId: string;
+  activeFragment: Fragment | null;
+  setActiveFragment: (fragment: Fragment | null) => void;
 }
-export const MessagesContainer = ({ projectId }: Props) => {
-  const bottomRef = useRef<HTMLDivElement>(null);
+export const MessagesContainer = ({
+  projectId,
+  activeFragment,
+  setActiveFragment,
+}: Props) => {
   const trpc = useTRPC();
+
+  const bottomRef = useRef<HTMLDivElement>(null);
   const { data: messages } = useSuspenseQuery(
     trpc.message.getMessages.queryOptions({
       projectId: projectId,
-    })
+    }),
   );
+
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const lastMessage = messages.findLast((msg) => {
+      return msg.role === "Assistant";
+    });
+
+    if (lastMessage && lastMessage.fragment) {
+      setActiveFragment(lastMessage.fragment);
+    }
+  }, [messages, setActiveFragment]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "instant" });
   }, [messages.length]);
+
+  const lastMessage = messages.length > 0 && messages[messages.length - 1];
+  let lastUserMessage;
+  if (lastMessage) {
+    if (lastMessage.role === "User") {
+      lastUserMessage = true;
+    } else {
+      lastUserMessage = false;
+    }
+  }
 
   // console.log(projectId);
   return (
@@ -30,12 +61,13 @@ export const MessagesContainer = ({ projectId }: Props) => {
               role={message.role}
               fragment={message.fragment}
               createdAt={message.createdAt}
-              isActiveFragment={false}
+              isActiveFragment={activeFragment?.id === message.fragment?.id}
               type={message.type}
-              onFragmentClick={() => {}}
+              onFragmentClick={() => setActiveFragment(message.fragment)}
             />
           ))}
         </div>
+        {lastUserMessage ? <Thinking /> : null}
         <div ref={bottomRef} />
       </div>
       <MessageForm projectId={projectId} />

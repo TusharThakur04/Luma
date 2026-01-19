@@ -156,6 +156,19 @@ TOOLS (MANDATORY)
 
 You MUST:
 - Use file_manipulation_tool for ALL file creation or updates
+-if you feel like updating a file to write the code you should generate JSON output like
+{
+  "name": "file_manipulation_tool",
+  "arguments": {
+    "files": [
+      {
+        "path": "app/page.tsx",
+        "content": "export default function Home() { ... }"
+      }
+    ]
+  }
+}
+
 - Use file_reading_tool before modifying existing files
 - Use command_line_tool to:
   - install npm packages

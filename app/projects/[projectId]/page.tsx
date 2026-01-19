@@ -14,10 +14,10 @@ export default async function Page(props: Props) {
 
   const queryClient = getQueryClient();
   void queryClient.prefetchQuery(
-    trpc.message.getMessages.queryOptions({ projectId })
+    trpc.message.getMessages.queryOptions({ projectId }),
   );
   void queryClient.prefetchQuery(
-    trpc.project.getProject.queryOptions({ id: projectId })
+    trpc.project.getProject.queryOptions({ id: projectId }),
   );
 
   return (

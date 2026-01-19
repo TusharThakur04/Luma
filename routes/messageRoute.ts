@@ -1,7 +1,7 @@
-import { z } from "zod";
 import { baseProcedure, createTRPCRouter } from "../trpc/init";
-import { inngest } from "@/inngest/client";
 import prisma from "@/lib/prisma";
+import { z } from "zod";
+import { inngest } from "@/inngest/client";
 
 export const messageRouter = createTRPCRouter({
   create: baseProcedure
@@ -9,7 +9,7 @@ export const messageRouter = createTRPCRouter({
       z.object({
         message: z.string().min(1, { message: "message is required" }),
         projectId: z.string(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       await prisma.message.create({
@@ -33,7 +33,7 @@ export const messageRouter = createTRPCRouter({
     .input(
       z.object({
         projectId: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const messages = await prisma.message.findMany({

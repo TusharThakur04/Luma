@@ -70,7 +70,7 @@ export const nextjsSandbox = inngest.createFunction(
           z.object({
             path: z.string(),
             content: z.string(),
-          })
+          }),
         ),
       }),
       handler: async ({ files }, { network, step }) => {
@@ -78,22 +78,11 @@ export const nextjsSandbox = inngest.createFunction(
           try {
             const updatedFiles = network.state.data.files || {};
 
-            // const pwd = await sandbox.commands.run("pwd");
-            // console.log("pwd:", pwd.stdout);
-
-            // const ls = await sandbox.commands.run("ls -la /home/user");
-            // console.log("/home/user contents:\n", ls.stdout);
-
             for (const file of files) {
               await sandbox.files.write(
                 `/home/user/${file.path}`,
-                file.content
+                file.content,
               ); // writing files inside sandbox
-              const result = await sandbox.commands.run(
-                "cat /home/user/app/page.tsx"
-              );
-
-              // console.log("app/page.tsx file------", result);
 
               updatedFiles[file.path] = file.content; //keeping track of what files added or changes
             }
@@ -216,5 +205,5 @@ export const nextjsSandbox = inngest.createFunction(
       files: output.state.data.files,
       summary: output.state.data.summary,
     };
-  }
+  },
 );

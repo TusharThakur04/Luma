@@ -4,12 +4,7 @@ import { Card } from "./card";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import {
-  ChevronRightIcon,
-  Code2Icon,
-  MoveRight,
-  PanelRight,
-} from "lucide-react";
+import { ChevronRightIcon, Code2Icon } from "lucide-react";
 
 interface MessageCardProps {
   content: string;
@@ -47,6 +42,7 @@ const AssistantMessageCard = ({
   createdAt,
   type,
 }: AssistantMessageProps) => {
+  console.log();
   return (
     <div className="group flex flex-col w-[80%] wrap-break-word mb-2">
       <div className="flex mb-2 h-4 items-center gap-1">
@@ -59,7 +55,7 @@ const AssistantMessageCard = ({
       <Card
         className={cn(
           "py-2 bg-gray-200 px-1 ml-5",
-          type === "Error" && "text-red-500"
+          type === "Error" && "text-red-500",
         )}
       >
         {content}
@@ -82,15 +78,23 @@ const FragmentCard = ({
   return (
     <button
       className={cn(
-        "ml-5 w-fit flex items-center gap-3 p-4 border bg-muted rounded-lg",
-        isActiveFragment &&
-          "bg-primary text-primary-foreground border-primary hover:bg-primary-foreground"
+        "ml-5 w-fit flex items-center gap-3 p-4  rounded-lg",
+        isActiveFragment
+          ? "bg-gray-900 text-primary-foreground border-primary hover:bg-gray-900/90 duration-300 hover:scale-97"
+          : "border bg-muted ",
       )}
     >
       <Code2Icon></Code2Icon>
       <div className="flex flex-col items-start">
         <span className="text-sm font-medium">{fragment.title}</span>
-        <span className="text-xs text-muted-foreground">Preview</span>
+        <span
+          className={cn(
+            "text-xs text-gray-300 ",
+            isActiveFragment ? "text-gray-300" : "text-gray-900",
+          )}
+        >
+          Preview
+        </span>
       </div>
 
       <ChevronRightIcon />
