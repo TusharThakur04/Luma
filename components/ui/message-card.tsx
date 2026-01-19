@@ -12,7 +12,7 @@ interface MessageCardProps {
   fragment: Fragment | null;
   createdAt: Date;
   isActiveFragment: boolean;
-  onFragmentClick: (fragment: Fragment) => void;
+  onFragmentClick: () => void;
   type: MessageType;
 }
 
@@ -33,7 +33,7 @@ interface AssistantMessageProps {
   fragment: Fragment | null;
   createdAt: Date;
   isActiveFragment: boolean;
-  onFragmentClick: (fragment: Fragment) => void;
+  onFragmentClick: () => void;
   type: MessageType;
 }
 
@@ -67,7 +67,7 @@ const AssistantMessageCard = ({
 interface FragmentCardProps {
   fragment: Fragment;
   isActiveFragment: boolean;
-  onFragmentClick: (fragment: Fragment) => void;
+  onFragmentClick: () => void;
 }
 
 const FragmentCard = ({
@@ -77,10 +77,11 @@ const FragmentCard = ({
 }: FragmentCardProps) => {
   return (
     <button
+      onClick={onFragmentClick}
       className={cn(
-        "ml-5 w-fit flex items-center gap-3 p-4  rounded-lg",
+        "ml-5 w-fit flex items-center gap-3 p-4  rounded-lg duration-300 hover:scale-97",
         isActiveFragment
-          ? "bg-gray-900 text-primary-foreground border-primary hover:bg-gray-900/90 duration-300 hover:scale-97"
+          ? "bg-gray-900/95 text-primary-foreground border-primary hover:bg-gray-900/90  "
           : "border bg-muted ",
       )}
     >

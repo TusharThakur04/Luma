@@ -7,6 +7,8 @@ import { MessagesContainer } from "@/components/ui/messages-container";
 import { Suspense, useState } from "react";
 import { Fragment } from "@/app/generated/prisma/client";
 import { useRouter } from "next/navigation";
+import FragmentView from "@/components/ui/fragmentView";
+import FragmentFallback from "@/components/ui/fragmentFallback";
 
 interface Props {
   projectId: string;
@@ -15,13 +17,13 @@ interface Props {
 const ProjectView = ({ projectId }: Props) => {
   const router = useRouter();
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
-  const trpc = useTRPC();
+  // const trpc = useTRPC();
 
-  const { data: project } = useSuspenseQuery(
-    trpc.project.getProject.queryOptions({
-      id: projectId,
-    }),
-  );
+  // const { data: project } = useSuspenseQuery(
+  //   trpc.project.getProject.queryOptions({
+  //     id: projectId,
+  //   }),
+  // );
 
   return (
     <div className="h-screen">
@@ -55,11 +57,18 @@ const ProjectView = ({ projectId }: Props) => {
           </div>
         </div>
         <div className="flex flex-col min-h-0 overflow-hidden border-r bg-white">
-          <div className="border-b px-4 py-2 text-sm font-semibold text-gray-600">
+          <div className="border-b text-center px-4 py-2 text-sm font-semibold text-gray-600">
             Preview
           </div>
 
-          <div className="flex-1 overflow-auto p-4"></div>
+          <div className="flex-1 overflow-auto">
+            {activeFragment ? (
+              <FragmentView fragment={activeFragment} />
+            ) : (
+              <FragmentFallback />
+            )}
+            {/* <FragmentFallback /> */}
+          </div>
         </div>
       </Split>
     </div>
