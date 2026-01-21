@@ -20,13 +20,13 @@ const ProjectView = ({ projectId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [fragmentOption, setFragmentOption] = useState("Page View");
-  // const trpc = useTRPC();
+  const trpc = useTRPC();
 
-  // const { data: project } = useSuspenseQuery(
-  //   trpc.project.getProject.queryOptions({
-  //     id: projectId,
-  //   }),
-  // );
+  const { data: project } = useSuspenseQuery(
+    trpc.project.getProject.queryOptions({
+      id: projectId,
+    }),
+  );
 
   return (
     <div className="h-screen">

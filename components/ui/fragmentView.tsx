@@ -12,7 +12,7 @@ const FragmentView = ({ fragment, fragmentOption }: FragmentViewProps) => {
       <iframe className="h-full w-full" src={fragment.sandboxURL} />
     </div>
   ) : (
-    <CodeView />
+    <CodeView fragment={fragment} />
   );
 };
 
