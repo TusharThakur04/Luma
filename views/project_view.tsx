@@ -9,6 +9,7 @@ import { Fragment } from "@/app/generated/prisma/client";
 import { useRouter } from "next/navigation";
 import FragmentView from "@/components/ui/fragmentView";
 import FragmentFallback from "@/components/ui/fragmentFallback";
+import { cn } from "@/lib/utils";
 
 interface Props {
   projectId: string;
@@ -16,7 +17,9 @@ interface Props {
 
 const ProjectView = ({ projectId }: Props) => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
+  const [fragmentOption, setFragmentOption] = useState("Page View");
   // const trpc = useTRPC();
 
   // const { data: project } = useSuspenseQuery(
@@ -49,6 +52,7 @@ const ProjectView = ({ projectId }: Props) => {
           <div className="flex-1 overflow-auto p-3">
             <Suspense fallback={<p>loading...</p>}>
               <MessagesContainer
+                setFragmentOption={setFragmentOption}
                 projectId={projectId}
                 activeFragment={activeFragment}
                 setActiveFragment={setActiveFragment}
@@ -57,13 +61,57 @@ const ProjectView = ({ projectId }: Props) => {
           </div>
         </div>
         <div className="flex flex-col min-h-0 overflow-hidden border-r bg-white">
-          <div className="border-b text-center px-4 py-2 text-sm font-semibold text-gray-600">
-            Preview
+          <div className="border-b px-4 py-2 flex items-center relative">
+            <div className=" text-gray-700 font-semibold text-sm absolute left-1/2 -translate-x-1/2">
+              Preview
+            </div>
+
+            {/* Switch button */}
+            <button
+              onClick={() => setIsOpen((v) => !v)}
+              className="ml-auto rounded-md px-2 py-1 font-medium text-sm bg-gray-200 hover:bg-gray-300 transition"
+            >
+              {fragmentOption}
+            </button>
+
+            {/* Dropdown */}
+            {isOpen && (
+              <div className="absolute right-10 top-full mt-2 w-32 rounded-sm border bg-white shadow-lg z-50">
+                <button
+                  className={cn(
+                    "w-full cursor-pointer text-left rounded-md  px-3 py-2 font-bold text-sm hover:bg-gray-100 ",
+                    fragmentOption === "Page View" && "bg-gray-300 font-medium",
+                  )}
+                  onClick={() => {
+                    setFragmentOption("Page View");
+                    setIsOpen(false);
+                  }}
+                >
+                  Page View
+                </button>
+
+                <button
+                  className={cn(
+                    "w-full cursor-pointer text-left px-3 rounded-md py-2 text-sm hover:bg-gray-100",
+                    fragmentOption === "Code View" && "bg-gray-300 font-medium",
+                  )}
+                  onClick={() => {
+                    setFragmentOption("Code View");
+                    setIsOpen(false);
+                  }}
+                >
+                  Code View
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 overflow-auto">
             {activeFragment ? (
-              <FragmentView fragment={activeFragment} />
+              <FragmentView
+                fragmentOption={fragmentOption}
+                fragment={activeFragment}
+              />
             ) : (
               <FragmentFallback />
             )}

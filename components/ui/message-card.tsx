@@ -14,6 +14,7 @@ interface MessageCardProps {
   isActiveFragment: boolean;
   onFragmentClick: () => void;
   type: MessageType;
+  setFragmentOption: (view: string) => void;
 }
 
 interface UserMessageProps {
@@ -68,16 +69,21 @@ interface FragmentCardProps {
   fragment: Fragment;
   isActiveFragment: boolean;
   onFragmentClick: () => void;
+  setFragmentOption: (view: string) => void;
 }
 
 const FragmentCard = ({
   fragment,
   isActiveFragment,
   onFragmentClick,
+  setFragmentOption,
 }: FragmentCardProps) => {
   return (
     <button
-      onClick={onFragmentClick}
+      onClick={() => {
+        onFragmentClick();
+        setFragmentOption("Page View");
+      }}
       className={cn(
         "ml-5 w-fit flex items-center gap-3 p-4  rounded-lg duration-300 hover:scale-97",
         isActiveFragment
@@ -111,6 +117,7 @@ const MessageCard = ({
   isActiveFragment,
   onFragmentClick,
   type,
+  setFragmentOption,
 }: MessageCardProps) => {
   if (role === "Assistant") {
     return (
@@ -128,6 +135,7 @@ const MessageCard = ({
             fragment={fragment}
             isActiveFragment={isActiveFragment}
             onFragmentClick={onFragmentClick}
+            setFragmentOption={setFragmentOption}
           />
         )}
       </>

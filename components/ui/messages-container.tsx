@@ -10,11 +10,13 @@ interface Props {
   projectId: string;
   activeFragment: Fragment | null;
   setActiveFragment: (fragment: Fragment | null) => void;
+  setFragmentOption: (view: string) => void;
 }
 export const MessagesContainer = ({
   projectId,
   activeFragment,
   setActiveFragment,
+  setFragmentOption,
 }: Props) => {
   const trpc = useTRPC();
 
@@ -64,6 +66,7 @@ export const MessagesContainer = ({
               isActiveFragment={activeFragment?.id === message.fragment?.id}
               type={message.type}
               onFragmentClick={() => setActiveFragment(message.fragment)}
+              setFragmentOption={setFragmentOption}
             />
           ))}
         </div>
