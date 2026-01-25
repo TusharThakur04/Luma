@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Fragment, Prisma } from "@/app/generated/prisma/client";
 import { cn } from "@/lib/utils";
-import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
-import { ArrowDown, ArrowDownNarrowWide, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface CodeViewProps {
   fragment: Fragment;

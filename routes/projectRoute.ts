@@ -12,7 +12,7 @@ export const projectRouter = createTRPCRouter({
         message: z
           .string()
           .min(1, { message: "prompt is required is required" }),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const createdProject = await prisma.project.create({
@@ -40,7 +40,7 @@ export const projectRouter = createTRPCRouter({
   getProjects: baseProcedure.query(async () => {
     const projects = await prisma.project.findMany({
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
     });
     return projects;
@@ -50,7 +50,7 @@ export const projectRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-      })
+      }),
     )
     .query(async ({ input }) => {
       const project = await prisma.project.findUnique({

@@ -22,11 +22,11 @@ const ProjectView = ({ projectId }: Props) => {
   const [fragmentOption, setFragmentOption] = useState("Page View");
   const trpc = useTRPC();
 
-  const { data: project } = useSuspenseQuery(
-    trpc.project.getProject.queryOptions({
-      id: projectId,
-    }),
-  );
+  // const { data: project } = useSuspenseQuery(
+  //   trpc.project.getProject.queryOptions({
+  //     id: projectId,
+  //   }),
+  // );
 
   return (
     <div className="h-screen">
@@ -66,7 +66,6 @@ const ProjectView = ({ projectId }: Props) => {
               Preview
             </div>
 
-            {/* Switch button */}
             <button
               onClick={() => setIsOpen((v) => !v)}
               className="ml-auto rounded-md px-2 py-1 font-medium text-sm bg-gray-200 hover:bg-gray-300 transition"
@@ -74,7 +73,6 @@ const ProjectView = ({ projectId }: Props) => {
               {fragmentOption}
             </button>
 
-            {/* Dropdown */}
             {isOpen && (
               <div className="absolute right-10 top-full mt-2 w-32 rounded-sm border bg-white shadow-lg z-50">
                 <button
