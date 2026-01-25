@@ -22,9 +22,14 @@ export const MessagesContainer = ({
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const { data: messages } = useSuspenseQuery(
-    trpc.message.getMessages.queryOptions({
-      projectId: projectId,
-    }),
+    trpc.message.getMessages.queryOptions(
+      {
+        projectId: projectId,
+      },
+      {
+        refetchInterval: 5000,
+      },
+    ),
   );
 
   useEffect(() => {
