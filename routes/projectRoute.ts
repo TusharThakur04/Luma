@@ -12,9 +12,11 @@ export const projectRouter = createTRPCRouter({
         message: z
           .string()
           .min(1, { message: "prompt is required is required" }),
+        userId: z.string(),
       }),
     )
     .mutation(async ({ input }) => {
+      console.log(input.message);
       const createdProject = await prisma.project.create({
         data: {
           name: randomName(),
@@ -25,6 +27,7 @@ export const projectRouter = createTRPCRouter({
               type: "Result",
             },
           },
+          userid: input.userId,
         },
       });
       await inngest.send({
@@ -37,14 +40,23 @@ export const projectRouter = createTRPCRouter({
       return createdProject;
     }),
 
-  getProjects: baseProcedure.query(async () => {
-    const projects = await prisma.project.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return projects;
-  }),
+  getProjects: baseProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+      }),
+    )
+    .query(async ({ input }) => {
+      const projects = await prisma.project.findMany({
+        where: {
+          userid: input.userId,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return projects;
+    }),
 
   getProject: baseProcedure
     .input(

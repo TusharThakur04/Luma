@@ -8,15 +8,18 @@ import { cn } from "@/lib/utils";
 
 interface DashboardProps {
   classname?: string;
+  userId: string;
 }
 
-const Dashboard = ({ classname }: DashboardProps) => {
+const Dashboard = ({ classname, userId }: DashboardProps) => {
   const [isOpen, setOpen] = useState(false);
 
   const trpc = useTRPC();
   const router = useRouter();
 
-  const { data: projects } = useQuery(trpc.project.getProjects.queryOptions());
+  const { data: projects } = useQuery(
+    trpc.project.getProjects.queryOptions({ userId }),
+  );
 
   return (
     <div
