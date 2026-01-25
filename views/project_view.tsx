@@ -1,8 +1,8 @@
 "use client";
 
 import Split from "react-split";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
+// import { useTRPC } from "@/trpc/client";
+// import { useSuspenseQuery } from "@tanstack/react-query";
 import { MessagesContainer } from "@/components/ui/messages-container";
 import { Suspense, useState } from "react";
 import { Fragment } from "@/app/generated/prisma/client";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import FragmentView from "@/components/ui/fragmentView";
 import FragmentFallback from "@/components/ui/fragmentFallback";
 import { cn } from "@/lib/utils";
+import ChatFallback from "@/components/ui/chatFallback";
 
 interface Props {
   projectId: string;
@@ -20,7 +21,7 @@ const ProjectView = ({ projectId }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
   const [fragmentOption, setFragmentOption] = useState("Page View");
-  const trpc = useTRPC();
+  // const trpc = useTRPC();
 
   // const { data: project } = useSuspenseQuery(
   //   trpc.project.getProject.queryOptions({
@@ -50,7 +51,7 @@ const ProjectView = ({ projectId }: Props) => {
           </div>
 
           <div className="flex-1 overflow-auto p-3">
-            <Suspense fallback={<p>loading...</p>}>
+            <Suspense fallback={<ChatFallback />}>
               <MessagesContainer
                 setFragmentOption={setFragmentOption}
                 projectId={projectId}
